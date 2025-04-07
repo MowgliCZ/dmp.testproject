@@ -1,0 +1,50 @@
+@model RssReaderApp.Models.Feed
+
+<h1>@Model.Name</h1>
+<p>@Model.Url</p>
+
+<h2>Filter Articles</h2>
+<form method="get" asp-action="Details" asp-route-id="@Model.Id">
+    <div>
+        <label for="fromDate">From:</label>
+        <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate?.ToString(" yyyy-MM-dd")" />
+    </div>
+    <div>
+        <label for="toDate">To:</label>
+        <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate?.ToString(" yyyy-MM-dd")" />
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+
+<h2>Articles</h2>
+<form asp-action="ReloadArticles" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-primary">Reload Articles</button>
+</form>
+@if (ViewBag.Articles != null && ((IEnumerable<RssReaderApp.Models.Article>)ViewBag.Articles).Any())
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Published Date</th>
+            <th>Link</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var article in (IEnumerable<RssReaderApp.Models.Article>)ViewBag.Articles)
+            {
+        <tr>
+            <td>@article.Title</td>
+            <td>@article.Description</td>
+            <td>@article.PublishedDate.ToShortDateString()</td>
+            <td><button class="btn btn-primary" onclick="window.open('@article.Link', '_blank')">Read more</button></td>
+        </tr>
+            }
+    </tbody>
+</table>
+}
+else
+{
+<p>No articles found for this feed.</p>
+}

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<RssReaderApp.Models.Feed>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="/js/deleteConfirmation.js"></script>
+    <script src="/js/multipleDelete.js"></script>
+
+    <h1>RSS Feeds</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    <input type="checkbox" id="selectAll" />
+                </th>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+        {
+            @foreach (var feed in Model)
+        {
+            <tr>
+                <td>
+                    <input type="checkbox" name="selectedFeeds" value="@feed.Id" class="feedCheckbox" />
+                </td>
+                <td>@feed.Name</td>
+                <td>@feed.Url</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@feed.Id" class="btn btn-info">View Details</a>
+                    <form asp-action="Delete" method="post" style="display:inline;" onsubmit="return confirmDeletion('@feed.Name');">
+                        <input type="hidden" name="id" value="@feed.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        }
+        else
+        {
+            <tr><td colspan="3">No feeds found.</td></tr>
+        }
+        </tbody>
+    </table>
+
+    <button id="deleteSelected" class="btn btn-danger">Delete Selected</button>
+    <a asp-action="Add" asp-controller="Feed" class="btn btn-primary">Add New Feed</a>

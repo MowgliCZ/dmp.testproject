@@ -1,0 +1,13 @@
+@model Feed
+
+<form asp-action="Add" method="post">
+    <div>
+        <label for="Name">Name</label>
+        <input type="text" id="Name" name="Name" required />
+    </div>
+    <div>
+        <label for="Url">URL</label>
+        <input type="url" id="Url" name="Url" required />
+    </div>
+    <button type="submit">Add Feed</button>
+</form>
