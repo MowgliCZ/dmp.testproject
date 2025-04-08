@@ -18,10 +18,8 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model != null && Model.Any())
-        {
-            @foreach (var feed in Model)
-        {
+            @if (Model != null && Model.Any()){
+            @foreach (var feed in Model){
             <tr>
                 <td>
                     <input type="checkbox" name="selectedFeeds" value="@feed.Id" class="feedCheckbox" />
@@ -36,12 +34,10 @@
                     </form>
                 </td>
             </tr>
-        }
-        }
-        else
-        {
+            }
+            }else {
             <tr><td colspan="3">No feeds found.</td></tr>
-        }
+            }
         </tbody>
     </table>
 

@@ -2,8 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using RssReaderApp.Models;
 using Microsoft.AspNetCore.HttpsPolicy;
 
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions
-{
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions {
     Args = args,
     WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")
 });
@@ -16,17 +15,15 @@ builder.Services.AddDbContext<RssDao>(options =>
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
+using (var scope = app.Services.CreateScope()) {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<RssDao>();
     context.Database.Migrate();
 }
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
+if (!app.Environment.IsDevelopment()) {
+    app.UseExceptionHandler("/Shared/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
