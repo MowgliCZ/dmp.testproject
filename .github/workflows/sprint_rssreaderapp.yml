@@ -23,6 +23,9 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      - name: Restore .NET tools
+        run: dotnet tool restore
+
       - name: Restore client-side libraries
         run: dotnet tool restore && dotnet libman restore
         working-directory: RssReaderApp
