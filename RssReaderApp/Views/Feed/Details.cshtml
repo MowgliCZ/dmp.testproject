@@ -20,7 +20,7 @@
 <form asp-action="ReloadArticles" asp-route-id="@Model.Id" method="post">
     <button type="submit" class="btn btn-primary">Reload Articles</button>
 </form>
-@if (ViewBag.Articles != null && ((IEnumerable<RssReaderApp.Models.Article>)ViewBag.Articles).Any())
+
 {
 <table class="table">
     <thead>
