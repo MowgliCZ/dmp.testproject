@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RssReaderApp.Models;
 using RssReaderApp.Dao;
 
 #nullable disable
@@ -12,8 +11,8 @@ using RssReaderApp.Dao;
 namespace RssReaderApp.Migrations
 {
     [DbContext(typeof(RssDao))]
-    [Migration("20250407152249_FixingArticles")]
-    partial class FixingArticles
+    [Migration("20250408231152_SplitFeedArticleDao")]
+    partial class SplitFeedArticleDao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,7 +27,6 @@ namespace RssReaderApp.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("FeedId")
@@ -57,6 +55,9 @@ namespace RssReaderApp.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("LastUpdated")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()

@@ -1,50 +1,112 @@
-@model RssReaderApp.Models.Feed
+@model RssReaderApp.Models.FeedDetailsViewModel
 
-<h1>@Model.Name</h1>
-<p>@Model.Url</p>
+<h1>@Model.Feed.Name</h1>
+<p>@Model.Feed.Url</p>
 
-<h2>Filter Articles</h2>
-<form method="get" asp-action="Details" asp-route-id="@Model.Id">
+<h3>Filter Articles</h3>
+<form method="get" asp-action="Details" asp-route-id="@Model.Feed.Id" onsubmit="this.page.value=1;">
+    <input type="hidden" name="page" value="1" />
+    <input type="hidden" name="pageSize" value="@Model.PageSize" />
+    <input type="hidden" name="searchTerm" value="@Model.SearchTerm" />
     <div>
         <label for="fromDate">From:</label>
-        <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate?.ToString(" yyyy-MM-dd")" />
+        <input type="date" id="fromDate" name="fromDate"
+               value="@(Model.FromDate.HasValue ? Model.FromDate.Value.ToString("yyyy-MM-dd") : "")" />
     </div>
     <div>
         <label for="toDate">To:</label>
-        <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate?.ToString(" yyyy-MM-dd")" />
+        <input type="date" id="toDate" name="toDate"
+               value="@(Model.ToDate.HasValue ? Model.ToDate.Value.ToString("yyyy-MM-dd") : "")" />
     </div>
     <button type="submit" class="btn btn-primary">Filter</button>
 </form>
 
+<h3>Search Articles by Title</h3>
+<form method="get" asp-action="Details" asp-route-id="@Model.Feed.Id">
+    <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Enter part of title..." style="width:300px;" />
+    <input type="hidden" name="fromDate" value="@Model.FromDate?.ToString(" yyyy-MM-dd")" />
+    <input type="hidden" name="toDate" value="@Model.ToDate?.ToString(" yyyy-MM-dd")" />
+    <input type="hidden" name="pageSize" value="@Model.PageSize" />
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
 <h2>Articles</h2>
-<form asp-action="ReloadArticles" asp-route-id="@Model.Id" method="post">
+<form asp-action="ReloadArticles" asp-route-id="@Model.Feed.Id" method="post">
     <button type="submit" class="btn btn-primary">Reload Articles</button>
 </form>
 
-{
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Published Date</th>
-            <th>Link</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var article in (IEnumerable<RssReaderApp.Models.Article>)ViewBag.Articles)
-            {
-        <tr>
-            <td>@article.Title</td>
-            <td>@article.Description</td>
-            <td>@article.PublishedDate.ToShortDateString()</td>
-            <td><button class="btn btn-primary" onclick="window.open('@article.Link', '_blank')">Read more</button></td>
-        </tr>
-            }
-    </tbody>
-</table>
+
+@{
+    var lastPage = (int)Math.Ceiling((double)Model.TotalArticles / Model.PageSize);
+    var hasNextPage = Model.Page < lastPage;
+
 }
-else
-{
-<p>No articles found for this feed.</p>
+
+@if (Model.Articles != null && Model.Articles.Any()) {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Published Date</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var article in Model.Articles) {
+            <tr>
+                <td>@article.Title</td>
+                <td>@article.Description</td>
+                <td>@article.PublishedDate.ToShortDateString()</td>
+                <td><a href="@article.Link" target="_blank" class="btn btn-primary">Read more</a></td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="pagination" style="display: flex; align-items: center; gap: 0.2rem;">
+        @if(Model.Page > 1) {
+        <a asp-action="Details"
+           asp-route-id="@Model.Feed.Id"
+           asp-route-searchTerm="@Model.SearchTerm"
+           asp-route-page="1"
+           asp-route-pageSize="@Model.PageSize"
+           asp-route-fromDate="@Model.FromDate?.ToString(" yyyy-MM-dd")"
+           asp-route-toDate="@Model.ToDate?.ToString(" yyyy-MM-dd")"
+           class="btn btn-secondary">&#8676;</a>
+
+        <a asp-action="Details"
+           asp-route-id="@Model.Feed.Id"
+           asp-route-searchTerm="@Model.SearchTerm"
+           asp-route-page="@(Model.Page - 1)"
+           asp-route-pageSize="@Model.PageSize"
+           asp-route-fromDate="@Model.FromDate?.ToString(" yyyy-MM-dd")"
+           asp-route-toDate="@Model.ToDate?.ToString(" yyyy-MM-dd")"
+           class="btn btn-secondary">&#8592;</a>
+        }
+
+        <span class="current-page">Page @Model.Page / @lastPage</span>
+        @if (hasNextPage) {
+        <a asp-action="Details"
+           asp-route-id="@Model.Feed.Id"
+           asp-route-searchTerm="@Model.SearchTerm"
+           asp-route-page="@(Model.Page + 1)"
+           asp-route-pageSize="@Model.PageSize"
+           asp-route-fromDate="@Model.FromDate?.ToString(" yyyy-MM-dd")"
+           asp-route-toDate="@Model.ToDate?.ToString(" yyyy-MM-dd")"
+           class="btn btn-secondary">&#8594;</a>
+
+        <a asp-action="Details"
+           asp-route-id="@Model.Feed.Id"
+           asp-route-searchTerm="@Model.SearchTerm"
+           asp-route-page="@lastPage"
+           asp-route-pageSize="@Model.PageSize"
+           asp-route-fromDate="@Model.FromDate?.ToString(" yyyy-MM-dd")"
+           asp-route-toDate="@Model.ToDate?.ToString(" yyyy-MM-dd")"
+           class="btn btn-secondary">&#8677;</a>
+        }
+
+    </div>
+} else {
+    <p>No articles found.</p>
 }

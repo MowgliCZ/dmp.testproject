@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RssReaderApp.Models;
+using RssReaderApp.Dao;
 using Microsoft.AspNetCore.HttpsPolicy;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions {
@@ -12,6 +13,9 @@ builder.Services.AddControllersWithViews();
 var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "rssreader.db");
 builder.Services.AddDbContext<RssDao>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
+builder.Services.AddScoped<FeedDao>();
+builder.Services.AddScoped<ArticleDao>();
+
 
 var app = builder.Build();
 

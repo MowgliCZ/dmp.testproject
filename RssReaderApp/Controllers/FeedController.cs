@@ -4,15 +4,18 @@ using System.ServiceModel.Syndication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RssReaderApp.Models;
+using RssReaderApp.Dao;
 using System.Runtime.CompilerServices;
 
 namespace RssReaderApp.Controllers;
 
 public class FeedController : Controller {
-    private readonly RssDao _context;
+    private readonly FeedDao _feedDao;
+    private readonly ArticleDao _articleDao;
 
-    public FeedController(RssDao context) {
-        _context = context;
+    public FeedController(FeedDao feedDao, ArticleDao articleDao) {
+        _feedDao = feedDao;
+        _articleDao = articleDao;
     }
 
     [HttpGet]
@@ -21,86 +24,77 @@ public class FeedController : Controller {
     }
 
     [HttpPost]
-    public IActionResult Add(Feed feed) {
+    public async Task<IActionResult> Add(Feed feed) {
         if (ModelState.IsValid) {
-            _context.Feeds.Add(feed);
-            _context.SaveChanges();
+            await _feedDao.Create(feed);
             return RedirectToAction("Index");
         }
         return View(feed);
     }
 
-    public IActionResult Index() {
-        var feeds = _context.Feeds?.ToList();
+    [HttpGet]
+    public async Task<IActionResult> Index() {
+        var feeds = await _feedDao.List();
         return View(feeds);
     }
 
     [HttpPost]
-    public IActionResult Delete(int id) {
-        var feed = _context.Feeds.Find(id);
-        if (feed != null) {
-            _context.Feeds.Remove(feed);
-            _context.SaveChanges();
-        }
+    public async Task<IActionResult> Delete(int id) {
+        await _feedDao.DeleteById(id);
         return RedirectToAction("Index");
     }
 
     [HttpPost]
-    public IActionResult DeleteMultiple(List<int> ids) {
-        foreach (var id in ids) {
-            var feed = _context.Feeds.Find(id);
-            if (feed != null) {
-                _context.Feeds.Remove(feed);
-            }
-        }
-        _context.SaveChanges();
-        return Ok();
+    public async Task<IActionResult> DeleteMultiple(List<int> ids) {
+        await _feedDao.DeleteManyById(ids);
+        return RedirectToAction("Index");
     }
 
-    public IActionResult Details(int id, DateTime? fromDate, DateTime? toDate) {
-        ReloadArticlesIfNeeded(id);
+    [HttpGet]
+    public async Task<IActionResult> Details(int id, DateTime? fromDate, DateTime? toDate, string searchTerm, int page = 1, int pageSize = 10) {
+        page = Math.Max(1, page);
+        pageSize = Math.Max(1, pageSize);
 
-        var feed = _context.Feeds.Include(f => f.Articles).FirstOrDefault(f => f.Id == id);
+        await _reloadArticlesIfNeeded(id);
+
+        var feed = await _feedDao.GetById(id);
 
         if (feed == null) {
             return NotFound();
         }
 
-        var articles = feed.Articles.AsQueryable();
+        var articles = await _articleDao.SearchArticles(id, fromDate, toDate, searchTerm, page, pageSize);
 
-        if (fromDate.HasValue)
-            articles = articles.Where(a => a.PublishedDate >= fromDate.Value);
+        var totalArticles = await _articleDao.Count(id, fromDate, toDate, searchTerm);
 
-        if (toDate.HasValue)
-            articles = articles.Where(a => a.PublishedDate <= toDate.Value);
-
-        var model = new FeedDetailsViewModel {
+        var viewModel = new FeedDetailsViewModel {
             Feed = feed,
-            Articles = articles.ToList()
+            Articles = articles,
+            Page = page,
+            PageSize = pageSize,
+            TotalArticles = totalArticles,
+            SearchTerm = searchTerm,
+            FromDate = fromDate,
+            ToDate = toDate
         };
 
-        ViewBag.Articles = articles.ToList();
-        ViewBag.FromDate = fromDate;
-        ViewBag.ToDate = toDate;
-
-        return View(feed);
+        return View(viewModel);
     }
 
-    private void ReloadArticlesIfNeeded(int id) {
-        var feed = _context.Feeds.Find(id);
+    private async Task _reloadArticlesIfNeeded(int id) {
+        var feed = await _feedDao.GetById(id);
         if (feed == null) return;
 
         if (feed.LastUpdated.HasValue && feed.LastUpdated.Value.AddMinutes(30) > DateTime.Now) {
             return;
         }
 
-        ReloadArticles(id);
+        await ReloadArticles(id);
     }
 
     [HttpPost]
-    public IActionResult ReloadArticles(int id) {
-        Console.WriteLine($"ReloadArticles called for feed ID: {id}");
-        var feed = _context.Feeds.Find(id);
+    public async Task<IActionResult> ReloadArticles(int id) {
+        var feed = await _feedDao.GetById(id);
         if (feed == null) {
             return NotFound();
         }
@@ -108,12 +102,14 @@ public class FeedController : Controller {
         try {
             using var reader = XmlReader.Create(feed.Url);
             var syndicationFeed = SyndicationFeed.Load(reader);
-            Console.WriteLine($"Feed: {feed}");
+
+            var articlesToAdd = new List<Article>();
 
             foreach (var item in syndicationFeed.Items) {
                 var link = item.Links.FirstOrDefault()?.Uri.ToString();
-                if (!string.IsNullOrEmpty(link) && !_context.Articles.Any(a => a.Link == link)) {
-                    _context.Articles.Add(new Article {
+                bool exists = await _articleDao.Exists(a => a.Link == link);
+                if (!exists) {
+                    articlesToAdd.Add(new Article {
                         Title = item.Title.Text,
                         Link = link,
                         Description = item.Summary?.Text,
@@ -124,12 +120,20 @@ public class FeedController : Controller {
                 }
             }
 
+            await _articleDao.Add(id, articlesToAdd);
+
             feed.LastUpdated = DateTime.Now;
-            _context.SaveChanges();
+            await _feedDao.Update(feed);
+
             return RedirectToAction("Details", new { id });
         } catch (Exception ex) {
-            Console.WriteLine($"Error: {ex.Message}");
             return StatusCode(500, "Chyba pøi naèítání èlánkù: " + ex.Message);
         }
+    }
+
+    [HttpGet]
+    public async Task<JsonResult> SearchFeeds(string term) {
+        var feeds = await _feedDao.SearchByName(term);
+        return Json(feeds.Select(f => new { f.Id, f.Name }));
     }
 }

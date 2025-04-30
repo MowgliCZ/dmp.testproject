@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using RssReaderApp.Models;
 
-namespace RssReaderApp.Models;
+namespace RssReaderApp.Dao;
 
 public class RssDao : DbContext {
     public RssDao(DbContextOptions<RssDao> options) : base(options) { }

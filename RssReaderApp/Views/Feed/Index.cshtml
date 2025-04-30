@@ -3,8 +3,13 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="/js/deleteConfirmation.js"></script>
     <script src="/js/multipleDelete.js"></script>
+    <script src="/js/searchFeeds.js"></script>
 
     <h1>RSS Feeds</h1>
+
+    <label for="fname">Search feed:</label>
+    <input id="fname" name="fname" autocomplete="off" />
+    <div id="search-results" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto;"></div>
 
     <table>
         <thead>
@@ -18,25 +23,27 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model != null && Model.Any()){
-            @foreach (var feed in Model){
-            <tr>
-                <td>
-                    <input type="checkbox" name="selectedFeeds" value="@feed.Id" class="feedCheckbox" />
-                </td>
-                <td>@feed.Name</td>
-                <td>@feed.Url</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@feed.Id" class="btn btn-info">View Details</a>
-                    <form asp-action="Delete" method="post" style="display:inline;" onsubmit="return confirmDeletion('@feed.Name');">
-                        <input type="hidden" name="id" value="@feed.Id" />
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
+            @if (Model != null && Model.Any()) {
+            @foreach (var feed in Model) {
+                <tr>
+                    <td>
+                        <input type="checkbox" name="selectedFeeds" value="@feed.Id" class="feedCheckbox" />
+                    </td>
+                    <td>@feed.Name</td>
+                    <td>@feed.Url</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@feed.Id" class="btn btn-info">View Details</a>
+                    </td>
+                    <td>
+                        <form asp-action="Delete" method="post" style="display:inline;" onsubmit="return confirmDeletion('@feed.Name');">
+                            <input type="hidden" name="id" value="@feed.Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
             }
             }else {
-            <tr><td colspan="3">No feeds found.</td></tr>
+                <tr><td colspan="3">No feeds found.</td></tr>
             }
         </tbody>
     </table>
