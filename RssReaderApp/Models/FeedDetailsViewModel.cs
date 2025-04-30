@@ -9,5 +9,4 @@ public class FeedDetailsViewModel {
     public string SearchTerm { get; set; }
     public DateTime? FromDate { get; set; }
     public DateTime? ToDate { get; set; }
-    public int LastPage => Math.Max(1, (int)Math.Ceiling((double)TotalArticles / PageSize));
 }
