@@ -1,0 +1,78 @@
+{
+  "usableSessionsCount": 2,
+  "retiredSessionsCount": 0,
+  "sessions": [
+    {
+      "id": "session_G7FvmOspQJ",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": []
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-05-01T11:09:45.720Z",
+      "createdAt": "2025-05-01T10:19:45.720Z",
+      "usageCount": 0,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    },
+    {
+      "id": "session_vmOl2oXtY4",
+      "cookieJar": {
+        "version": "tough-cookie@5.1.2",
+        "storeType": "MemoryCookieStore",
+        "rejectPublicSuffixes": true,
+        "enableLooseMode": false,
+        "allowSpecialUseDomain": true,
+        "prefixSecurity": "silent",
+        "cookies": [
+          {
+            "key": "SelectedLanguage",
+            "value": "en",
+            "expires": "2025-06-01T10:19:46.336Z",
+            "domain": "www.dmpagency.cz",
+            "path": "/",
+            "hostOnly": true,
+            "creation": "2025-05-01T10:19:46.994Z",
+            "lastAccessed": "2025-05-01T10:19:46.994Z"
+          },
+          {
+            "key": "__RequestVerificationToken",
+            "value": "UasT4DWHudEWRQdnbVkMry2zyKsbHXh98Ii8dcJYrwawfhD74X_Np_NJ3nkTGA6kiUqMPUg0qTFjzTqbGKvM3HfR5zg1",
+            "expires": "2025-05-01T11:09:46.993Z",
+            "domain": "www.dmpagency.cz",
+            "path": "/",
+            "httpOnly": true,
+            "hostOnly": true,
+            "creation": "2025-05-01T10:19:46.995Z",
+            "lastAccessed": "2025-05-01T10:19:46.995Z"
+          },
+          {
+            "key": "_clck",
+            "value": "1h21h0o%7C2%7Cfvj%7C0%7C1947",
+            "expires": "2026-05-01T10:19:46.000Z",
+            "domain": "dmpagency.cz",
+            "path": "/",
+            "hostOnly": false,
+            "creation": "2025-05-01T10:19:46.995Z",
+            "lastAccessed": "2025-05-01T10:19:46.995Z"
+          }
+        ]
+      },
+      "userData": {},
+      "maxErrorScore": 3,
+      "errorScoreDecrement": 0.5,
+      "expiresAt": "2025-05-01T11:09:45.726Z",
+      "createdAt": "2025-05-01T10:19:45.726Z",
+      "usageCount": 1,
+      "maxUsageCount": 50,
+      "errorScore": 0
+    }
+  ]
+}
