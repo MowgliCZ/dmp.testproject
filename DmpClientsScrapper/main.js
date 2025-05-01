@@ -12,9 +12,9 @@ async function main() {
                 items.map(item => ({
                     Name: item.querySelector('.list-item-heading')?.textContent?.trim() || '',
                     Annotation: item.querySelector('.list-item-anotation')?.textContent?.trim() || '',
+                    Content: item.querySelector('.overlay-txt')?.textContent?.trim() || '',
                     Link: item.querySelector('.overlay-link a')?.href || '',
-                    Image: item.querySelector('.list-item-image')?.getAttribute('data-src') ||
-                        (item.querySelector('.list-item-image')?.style.backgroundImage?.replace(/^url\(["']?(.+?)["']?\)$/, '$1') || '')
+                    Image: item.querySelector('.list-item-image')?.getAttribute('data-src') || ''
                 }))
             );
             allClients.push(...clients);
@@ -30,9 +30,9 @@ async function main() {
                     items.map(item => ({
                         Name: item.querySelector('.list-item-heading')?.textContent?.trim() || '',
                         Annotation: item.querySelector('.list-item-anotation')?.textContent?.trim() || '',
+                        Content: item.querySelector('.overlay-txt')?.textContent?.trim() || '',
                         Link: item.querySelector('.overlay-link a')?.href || '',
-                        Image: item.querySelector('.list-item-image')?.getAttribute('data-src') ||
-                            (item.querySelector('.list-item-image')?.style.backgroundImage?.replace(/^url\(["']?(.+?)["']?\)$/, '$1') || '')
+                        Image: item.querySelector('.list-item-image')?.getAttribute('data-src') || ''
                     }))
                 );
                 allClients.push(...clients2);

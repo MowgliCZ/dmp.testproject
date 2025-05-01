@@ -1,6 +1,6 @@
 {
 	"id": "96r4UAyAMoJHKUD",
-	"json": "{\"id\":\"96r4UAyAMoJHKUD\",\"url\":\"https://www.dmpublishing.cz/en/references\",\"loadedUrl\":\"https://www.dmpagency.cz/en/references\",\"uniqueKey\":\"https://www.dmpublishing.cz/en/references\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-05-01T10:19:48.460Z\"}",
+	"json": "{\"id\":\"96r4UAyAMoJHKUD\",\"url\":\"https://www.dmpublishing.cz/en/references\",\"loadedUrl\":\"https://www.dmpagency.cz/en/references\",\"uniqueKey\":\"https://www.dmpublishing.cz/en/references\",\"method\":\"GET\",\"noRetry\":false,\"retryCount\":0,\"errorMessages\":[],\"headers\":{},\"userData\":{\"__crawlee\":{\"state\":4}},\"handledAt\":\"2025-05-01T21:06:07.175Z\"}",
 	"method": "GET",
 	"orderNo": null,
 	"retryCount": 0,
